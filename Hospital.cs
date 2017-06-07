@@ -40,8 +40,8 @@ namespace Hospital
 
     public static class Hospital
     {
-        private static List<User> allUsers = new List<User>();
-        public static List<User> AllUsers
+        private static List<IUser> allUsers = new List<IUser>();
+        public static List<IUser> AllUsers
         {
             get { return allUsers; }
             set { allUsers = value; }
@@ -54,12 +54,27 @@ namespace Hospital
                 if (str == c)
                 {
                     Command command = (Command)Enum.Parse(typeof(Command), c);
-                    if ((int)command >= 5 && (int)command < 8 && myPatient == null)
-                        return Command.nothing;
+                    if ((int)command >= 5 && (int)command < 8)
+                    {
+                        if (myPatient == null)
+                            return Command.nothing;
+                        else
+                            return command;
+                    }
                     if ((int)command >= 8 && (int)command < 13 && myDoctor == null)
-                        return Command.nothing;
-                    if ((int)command >= 13 && myAdmin == null)
-                        return Command.nothing;
+                    {
+                        if (myDoctor == null)
+                            return Command.nothing;
+                        else
+                            return command;
+                    }
+                    //if ((int)command >= 13 && myAdmin == null)
+                    //{
+                    //    if (myAdmin == null)
+                    //        return Command.nothing;
+                    //    else
+                    //        return command;
+                    //}
                     if ((int)command < 5)
                         return command;
                 }
@@ -67,9 +82,9 @@ namespace Hospital
             return Command.nothing;
         }
 
-        public static User Search(string line)
+        public static IUser Search(string line)
         {
-            List<User> foundUsers = new List<User>();
+            List<IUser> foundUsers = new List<IUser>();
             if (line == "")
             {
                 AllUsers.Sort();
@@ -108,52 +123,53 @@ namespace Hospital
                 foundUsers.Sort();
                 for (int i = 0; i < foundUsers.Count; i++)
                 {
-                    Console.WriteLine(i + 1 + " " + foundUsers[i].Name + " " + foundUsers[i].Surname + " login:" + foundUsers[i].Login);
+                    Console.WriteLine(i + 1 + ". ");
+                    PrintUser(foundUsers[i]);
                 }
                 return Select(foundUsers);
 
             }
         }
 
-        private static void SearchByName(string name, List<User> foundUsers)
+        private static void SearchByName(string name, List<IUser> foundUsers)
         {
-            foreach (User u in AllUsers)
+            foreach (IUser u in AllUsers)
             {
                 if (u.Name.ToLower() == name.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchBySurname(string surname, List<User> foundUsers)
+        private static void SearchBySurname(string surname, List<IUser> foundUsers)
         {
-            foreach (User u in AllUsers)
+            foreach (IUser u in AllUsers)
             {
                 if (u.Surname.ToLower() == surname.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByNameAndSurname(string name, string surname, List<User> foundUsers)
+        private static void SearchByNameAndSurname(string name, string surname, List<IUser> foundUsers)
         {
-            foreach (User u in AllUsers)
+            foreach (IUser u in AllUsers)
             {
                 if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByLogin(string login, List<User> foundUsers)
+        private static void SearchByLogin(string login, List<IUser> foundUsers)
         {
-            foreach (User u in AllUsers)
+            foreach (IUser u in AllUsers)
             {
                 if (u.Login == login)
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByNameSurnnameAndLogin(string name, string surname, string login, List<User> foundUsers)
+        private static void SearchByNameSurnnameAndLogin(string name, string surname, string login, List<IUser> foundUsers)
         {
-            foreach (User u in AllUsers)
+            foreach (IUser u in AllUsers)
             {
                 if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower() && u.Login == login)
                     foundUsers.Add(u);
@@ -161,7 +177,7 @@ namespace Hospital
         }
 
 
-        public static User Select(List<User> list)
+        public static IUser Select(List<IUser> list)
         {
             try
             {
@@ -205,6 +221,134 @@ namespace Hospital
             }
         }
 
+        public static void SignIn()
+        {
+            if (myDoctor == null && myPatient == null /*&& myAdmin == null*/)
+            {
+                Console.Write("Login: ");
+                string login = Console.ReadLine().Replace("Login:", "").Trim();
+                Console.Write("Password: ");
+                string password = GetPasswordFromUser();
+                Console.WriteLine();
+                foreach (IUser u in AllUsers)
+                {
+                    if (login == u.Login && password == u.Password)
+                    {
+                        try
+                        {
+                            myPatient = (IPatient)u;
+                            Console.WriteLine();
+                            PrintUser(myPatient);
+                            Console.Write("\n         Messeges ");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine(myPatient.CountOfUnreadMessages);
+                            Console.ForegroundColor = ConsoleColor.White;
+                            return;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            try
+                            {
+                                myDoctor = (IDoctor)u;
+                                Console.WriteLine();
+                                PrintUser(myDoctor);
+                                Console.Write("\nRequests ");
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(myDoctor.ListOfRequests.Count);
+                                Console.ForegroundColor = ConsoleColor.White;
+                                return;
+                            }
+                            catch (InvalidCastException)
+                            {
+                                //myAdmin = (Admin)u;
+                                //Console.WriteLine();
+                                //PrintUser(myAdmin);
+                                //return;
+                            }
+                        }
+                    }
+                }
+                MessageBox.Show("Incorrect login or password.");
+            }
+            else
+            {
+                MessageBox.Show("You are already loged in.");
+            }
+        }
+
+        public static void SignUp()
+        {
+            Console.Write("Name: ");
+            string name = Console.ReadLine().Replace("Name:", "").Trim();
+            Console.Write("Surame: ");
+            string surname = Console.ReadLine().Replace("Surname:", "").Trim();
+            bool t = true;
+            string login = "";
+            do
+            {
+                Console.Write("Login: ");
+                login = Console.ReadLine().Replace("Login:", "").Trim();
+                foreach (IUser u in AllUsers)
+                {
+                    if (login == u.Login)
+                    {
+                        MessageBox.Show("This login already exists.");
+                        t = false;
+                    }
+                }
+            }
+            while (!t);
+            Console.Write("Password: ");
+            string password = GetPasswordFromUser();
+            Console.WriteLine();
+            myPatient = new Patient(name, surname, login, password);
+            AllUsers.Add(myPatient);
+        }
+
+        public static void SignOut()
+        {
+            if (myPatient != null)
+            {
+                myPatient = null;
+            }
+            else if (myDoctor != null)
+            {
+                myDoctor = null;
+            }
+            //else if (myAdmin != null)
+            //{
+            //    myAdmin = null;
+            //}
+            else
+            {
+                MessageBox.Show("You are not signed in.");
+            }
+        }
+
+        private static string GetPasswordFromUser()
+        {
+            string password = "";
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(true);
+                if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
+                {
+                    password += key.KeyChar;
+                    Console.Write("");
+                }
+                else
+                {
+                    if (key.Key == ConsoleKey.Backspace && password.Length > 0)
+                    {
+                        password = password.Substring(0, (password.Length - 1));
+                        Console.Write("\b \b");
+                    }
+                }
+            } while (key.Key != ConsoleKey.Enter);
+            //return Encode.Encrypt(password);
+            return password;
+        }
 
         public static void RequestForConsultation(string date)
         {
@@ -263,18 +407,24 @@ namespace Hospital
             }
         }
 
+        private static void PrintUser(IUser user)
+        {
+            Console.WriteLine("{0}: {1} {2} ({3})",user.Possition , user.Name , user.Surname , user.Login);
+        }
 
 
 
 
 
-        private static Patient myPatient = null;
-        private static Doctor myDoctor = null;
-        private static Admin myAdmin = null;
-        private static User selected = null;
+
+        private static IPatient myPatient = null;
+        private static IDoctor myDoctor = null;
+        //private static IAdmin myAdmin = null;
+        private static IUser selected = null;
 
         public static void MyConsole()
         {
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("WELCOME TO OUR HOSPITAL :)\n");
             Console.WriteLine("Active commands: " + (Command)0);
             for (int i = 1; i < 5; i++)
@@ -286,6 +436,22 @@ namespace Hospital
             Command command = Command.nothing;
             while (command != Command.exit)
             {
+                if (myPatient != null)
+                {
+                    Console.WriteLine();
+                    PrintUser(myPatient);
+                }
+                else if (myDoctor != null)
+                {
+                    Console.WriteLine();
+                    PrintUser(myDoctor);
+                }
+                //else if (myAdmin != null)
+                //{
+                //    Console.WriteLine();
+                //    PrintUser(myAdmin);
+                //}
+                Console.Write("$ ");
                 String line = Console.ReadLine();
                 command = DetectCommand(line.Split()[0]);
                 line = line.Replace(command.ToString(), "").Trim();
@@ -299,7 +465,13 @@ namespace Hospital
                         Console.WriteLine(selected);
                         break;
                     case Command.signIn:
-
+                        SignIn();
+                        break;
+                    case Command.signUp:
+                        SignUp();
+                        break;
+                    case Command.signOut:
+                        SignOut();
                         break;
                     case Command.requestForConsultation:
                         RequestForConsultation(line.Replace(command.ToString(), "").Trim());

@@ -6,26 +6,13 @@ using System.Threading.Tasks;
 
 namespace Hospital
 {
-     public class User: IComparable<User>
+     public interface IUser: IComparable<IUser>
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Possition { get; set; }
+        string Name{ get; set; }
+        string Surname { get; set; }
+        string Login { get; set; }
+        string Password { get; set; }
+        string Possition { get; set; }
 
-        public User(string name, string surname, string login, string password, string possition)
-        {
-            this.Name = name;
-            this.Surname = surname;
-            this.Login = login;
-            this.Password = password;
-            this.Possition = possition;
-        }
-
-        public int CompareTo(User other)
-        {
-            return this.Name.CompareTo(other.Name);
-        }
     }
 }

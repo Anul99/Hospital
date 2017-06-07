@@ -10,7 +10,7 @@ namespace Hospital
     {
         static void Main(string[] args)
         {
-            //Hospital.MyConsole();
+            Hospital.MyConsole();
 
             //DateTime s = DateTime.Now;
             //DateTime e = s.AddHours(1);
@@ -50,12 +50,12 @@ namespace Hospital
             //op.Add(new WorkingTimes(DayOfWeek.Thursday, "10:00", "24:00"));
             //op.Add(new WorkingTimes(DayOfWeek.Tuesday, "10:00", "24:00"));
 
-            //User d = new Doctor("n", "s", "l", "p", "s", op, "t", 10000);
-            //Patient p = (Patient)d;
+            //IUser d = new Doctor("n", "s", "l", "p", "s", op, "t", 10000);
+            //IPatient p = (IPatient)d;
 
-            Patient p = new Patient("n", "s", "l", "p", 17);
-            Consultation c = new Consultation(DateTime.Now, p);
-            Console.WriteLine(c);
+            //Patient p = new Patient("n", "s", "l", "p", 17);
+            //Consultation c = new Consultation(DateTime.Now, p);
+            //Console.WriteLine(c);
 
         }
     }

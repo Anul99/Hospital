@@ -6,19 +6,46 @@ using System.Threading.Tasks;
 using System.Windows.Forms; 
 
 namespace Hospital
-{
-    public class Doctor : User
+{ 
+    public interface IDoctor : IUser
     {
+        string Speciality { get; set; }
+        List<WorkingTimes> WorkingTimes { get; set; }
+        List<Consultation> Calendar { get; set; }
+        string Telephone { get; set; }
+        int CostOfConsultation { get; set; }
+        List<Consultation> ListOfRequests { get; set; }
+
+
+        void AddNoteToPatientHistory(Patient patient, string note);
+        void ServeAPatient(Consultation request);
+        void RefuseARequest(Consultation request);
+        void OpenListOfRequests();
+        void SeeMyCalendar();
+    }
+
+
+    public class Doctor : IDoctor
+    {
+        
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public string Possition { get; set; }
         public string Speciality { get; set; }
         public List<WorkingTimes> WorkingTimes { get; set; }
         public List<Consultation> Calendar { get; set; }
-        public string  Telephone { get; set; }
+        public string Telephone { get; set; }
         public int CostOfConsultation { get; set; }
         public List<Consultation> ListOfRequests { get; set; }
-
         public Doctor(string name, string surname, string login, string password, string speciality, List<WorkingTimes> workingTimes, string telephone, int costOfConsultion) 
-            :base(name, surname, login, password, "Doctor")
         {
+            this.Name = name;
+            this.Surname = surname;
+            this.Login = login;
+            this.Password = password;
+            this.Possition = "Doctor";
             this.Speciality = speciality;
             this.WorkingTimes = workingTimes;
             this.Calendar = new List<Consultation>();
@@ -42,12 +69,17 @@ namespace Hospital
 
         public void ServeAPatient(Consultation request)
         {
-            if (request.StartOfConsultation > DateTime.Now )
+            if (request.StartOfConsultation > DateTime.Now)
             {
                 this.Calendar.Add(request);
-                request.Patient.Messages.Add(new Message("Your request for consultation was confirmed. \nYour consultation: " + request.StartOfConsultation.ToString().Substring(0,16) + " - " + request.EndOfConsultation.TimeOfDay.ToString().Substring(0,5) + "\n                   Doctor:" + this.Name + " " + this.Surname + " (" + this.Login + ")", DateTime.Now));
+                request.Patient.Messages.Add(new Message("Your request for consultation was confirmed. \nYour consultation: " + request.StartOfConsultation.ToString().Substring(0, 16) + " - " + request.EndOfConsultation.TimeOfDay.ToString().Substring(0, 5) + "\n                   Doctor:" + this.Name + " " + this.Surname + " (" + this.Login + ")", DateTime.Now));
                 ListOfRequests.Remove(request);
             }
+            else
+            {
+                MessageBox.Show("You can't confirm request whith past date.");
+            }
+
         }
 
         public void RefuseARequest(Consultation request)
@@ -59,7 +91,6 @@ namespace Hospital
 
         public void OpenListOfRequests()
         {
-            ListOfRequests.Sort();
             for (int i = ListOfRequests.Count - 1; i >=  0; i--)
             {
                 if (ListOfRequests[i].StartOfConsultation < DateTime.Now)
@@ -68,6 +99,7 @@ namespace Hospital
                     ListOfRequests.RemoveAt(i);
                 }
                 Console.WriteLine(ListOfRequests.Count - i + " " + ListOfRequests[i]);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
@@ -90,13 +122,18 @@ namespace Hospital
 
         public override string ToString()
         {
-            string res = "Doctor / " + this.Speciality + "\n" ;
+            string res = this.Possition + "/ " + this.Speciality + "\n" ;
             res += this.Name + " " + this.Surname + "\n" + "Login: " + this.Login + "\n" + "Tel:" + this.Telephone;
             foreach (WorkingTimes t in this.WorkingTimes)
             {
                 res += t + "\n";
             }
             return res;
+        }
+
+        public int CompareTo(IUser other)
+        {
+            return this.Name.CompareTo(other.Name);
         }
     }
 
