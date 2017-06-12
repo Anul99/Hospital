@@ -4,3 +4,11 @@ C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug
 C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\Hospital.pdb
 C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\obj\Debug\Hospital.exe
 C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\obj\Debug\Hospital.pdb
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\EntityFramework.dll
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\System.Data.SQLite.dll
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\EntityFramework.xml
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\System.Data.SQLite.xml
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\Newtonsoft.Json.dll
+C:\Users\anahi\documents\visual studio 2015\Projects\Hospital\Hospital\bin\Debug\Newtonsoft.Json.xml

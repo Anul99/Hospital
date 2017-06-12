@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
+using System.Security.Cryptography;
 
 namespace Hospital
 {
@@ -26,25 +28,25 @@ namespace Hospital
         }
     }
 
-    public interface IPatient : IUser
-    {
-        List<string> History { get; set; }
-        List<Message> Messages { get; set; }
-        int CountOfUnreadMessages { get; }
+    //public interface IPatient : IUser
+    //{
+    //    string History { get; set; }
+    //    List<Message> Messages { get; set; }
+    //    int CountOfUnreadMessages { get; }
 
-        void RequestForConsultation(Doctor doctor, DateTime startOfConsultation);
-        void SeeMyHistory();
-        void SeeMyMessages();
-    }
+    //    void RequestForConsultation(Doctor doctor, DateTime startOfConsultation);
+    //    void SeeMyHistory();
+    //    void SeeMyMessages();
+    //}
 
-    public class Patient : IPatient 
+    public class Patient : User/*, IPatient */
     {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Possition { get; set; }
-        public List<string> History { get ; set; }
+        //public string Name { get; set; }
+        //public string Surname { get; set; }
+        //public string Login { get; set; }
+        //public string Password { get; set; }
+        //public string Possition { get; set; }
+        public string History { get ; set; }
         public List<Message> Messages { get; set; }
         public int CountOfUnreadMessages
         {
@@ -70,7 +72,6 @@ namespace Hospital
             this.Login = login;
             this.Password = password;
             this.Possition = "Patient";
-            this.History = new List<string>();
             this.Messages = new List<Message>();
         }
 
@@ -88,10 +89,7 @@ namespace Hospital
 
         public void SeeMyHistory()
         {
-            foreach (string h in this.History)
-            {
-                Console.WriteLine(h);
-            }
+            Console.WriteLine(this.History);
         }
 
         public void SeeMyMessages()
@@ -121,17 +119,17 @@ namespace Hospital
 
         public override string ToString()
         {
-            string res = this.Name + " " + this.Surname + "\nLogin:" + this.Login ;
-            foreach (string h in this.History)
-            {
-                res += h + "\n";
-            }
-            return res;
+            return this.Name + " " + this.Surname + "\nLogin: " + this.Login + "\nHistory: " + this.History;
         }
 
-        public int CompareTo(IUser other)
+        //public int CompareTo(IUser other)
+        //{
+        //    return this.Name.CompareTo(other.Name);
+        //}
+
+        public void ChangePassword(string newPassword)
         {
-            return this.Name.CompareTo(other.Name);
+            this.Password = newPassword;
         }
     }
 }

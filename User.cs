@@ -13,6 +13,18 @@ namespace Hospital
         string Login { get; set; }
         string Password { get; set; }
         string Possition { get; set; }
+    }
+    public class User /*: IUser*/: IComparable<User>
+    {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public string Possition { get; set; }
 
+        public int CompareTo(User other)
+        {
+            return this.Name.CompareTo(other.Name);
+        }
     }
 }

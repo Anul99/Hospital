@@ -4,18 +4,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-
+using System.Configuration;
+using System.Security.Cryptography;
+using Newtonsoft.Json;
+using System.IO;
+using System.Collections;
 
 namespace Hospital
 {
     public enum Command
     {
-        search,
         signIn,
         signUp,
         signOut,
+        search,
         exit,
+        changePassword,
 
         //Patient's commands
         requestForConsultation,
@@ -40,12 +44,40 @@ namespace Hospital
 
     public static class Hospital
     {
-        private static List<IUser> allUsers = new List<IUser>();
-        public static List<IUser> AllUsers
+        private static string allUsersPath = @"../../allUsers.json";
+        private static string allPatientsPath = @"../../AllPatients.json";
+        private static string allDoctorsPath = @"../../AllDoctors.json";
+        private static string adminPath = @"../../Admin.json";
+
+
+        //private static List<User> allUsers = new List<User>();
+
+        private static List<Patient> allPatients = new List<Patient>();
+
+        private static List<Doctor> allDoctors = new List<Doctor>();
+
+
+        private static Admin admin = new Admin("Admin", "", "admin", HashSha256("1234"));
+        
+        //public static List<User> AllUsers
+        //{
+        //    get { return allUsers; }
+        //    set { allUsers = value; }
+        //}
+
+        public static List<Patient> AllPatients
         {
-            get { return allUsers; }
-            set { allUsers = value; }
+            get { return allPatients; }
+            set { allPatients = value; }
         }
+
+        public static List<Doctor> AllDoctors
+        {
+            get { return allDoctors; }
+            set { allDoctors = value; }
+        }
+
+
 
         public static Command DetectCommand(string str)
         {
@@ -54,41 +86,58 @@ namespace Hospital
                 if (str == c)
                 {
                     Command command = (Command)Enum.Parse(typeof(Command), c);
-                    if ((int)command >= 5 && (int)command < 8)
+                    if ((int)command > (int)Command.exit && (int)command <= (int)Command.myMesseges)
                     {
-                        if (myPatient == null)
+                        if (myUser == null || myUser.Possition != "Patient")
+                            return Command.nothing;
+                        else if(command == Command.requestForConsultation && 
+                            (selected == null || selected.Possition != "Doctor"))
                             return Command.nothing;
                         else
                             return command;
                     }
-                    if ((int)command >= 8 && (int)command < 13 && myDoctor == null)
+                    if ((int)command > (int)Command.myMesseges && (int)command <= (int)Command.myCalendar)
                     {
-                        if (myDoctor == null)
+                        if (myUser == null || myUser.Possition != "Doctor")
+                            return Command.nothing;
+                        else if(command == Command.addPatientHistory && 
+                            (selected == null || selected.Possition != "Patient"))
                             return Command.nothing;
                         else
                             return command;
                     }
-                    //if ((int)command >= 13 && myAdmin == null)
-                    //{
-                    //    if (myAdmin == null)
-                    //        return Command.nothing;
-                    //    else
-                    //        return command;
-                    //}
-                    if ((int)command < 5)
+                    if ((int)command > (int)Command.myCalendar)
+                    {
+                        if (myUser == null || myUser.Possition != "Admin")
+                            return Command.nothing;
+                        else if (command == Command.deleteDoctor && (selected == null || selected.Possition != "Doctor"))
+                            return Command.nothing;
+                        else
+                            return command;
+                    }
+                    if ((int)command <= (int)Command.exit)
                         return command;
                 }
             }
             return Command.nothing;
         }
 
-        public static IUser Search(string line)
+        public static User Search(string line)
         {
-            List<IUser> foundUsers = new List<IUser>();
+            List<User> foundUsers = new List<User>();
+            List<Patient> foundPatients = new List<Patient>();
+            List<Doctor> foundDoctors = new List<Doctor>();
             if (line == "")
             {
-                AllUsers.Sort();
-                foundUsers = AllUsers;
+                AllPatients.Sort();
+                foreach (Patient p in AllPatients)
+                {
+                    foundUsers.Add(p);
+                }
+                foreach (Doctor d in AllDoctors)
+                {
+                    foundUsers.Add(d);
+                }
             }
             string[] s = line.Split();
             switch (s.Length)
@@ -123,7 +172,7 @@ namespace Hospital
                 foundUsers.Sort();
                 for (int i = 0; i < foundUsers.Count; i++)
                 {
-                    Console.WriteLine(i + 1 + ". ");
+                    Console.Write(i + 1 + ". ");
                     PrintUser(foundUsers[i]);
                 }
                 return Select(foundUsers);
@@ -131,45 +180,70 @@ namespace Hospital
             }
         }
 
-        private static void SearchByName(string name, List<IUser> foundUsers)
+        private static void SearchByName(string name, List<User> foundUsers)
         {
-            foreach (IUser u in AllUsers)
+            foreach (Patient u in AllPatients)
+            {
+                if (u.Name.ToLower() == name.ToLower())
+                    foundUsers.Add(u);
+            }
+            foreach (Doctor u in allDoctors)
             {
                 if (u.Name.ToLower() == name.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchBySurname(string surname, List<IUser> foundUsers)
+        private static void SearchBySurname(string surname, List<User> foundUsers)
         {
-            foreach (IUser u in AllUsers)
+            foreach (Patient u in AllPatients)
+            {
+                if (u.Surname.ToLower() == surname.ToLower())
+                    foundUsers.Add(u);
+            }
+            foreach (Doctor u in allDoctors)
             {
                 if (u.Surname.ToLower() == surname.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByNameAndSurname(string name, string surname, List<IUser> foundUsers)
+        private static void SearchByNameAndSurname(string name, string surname, List<User> foundUsers)
         {
-            foreach (IUser u in AllUsers)
+            foreach (Patient u in AllPatients)
+            {
+                if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower())
+                    foundUsers.Add(u);
+            }
+            foreach (Doctor u in allDoctors)
             {
                 if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower())
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByLogin(string login, List<IUser> foundUsers)
+        private static void SearchByLogin(string login, List<User> foundUsers)
         {
-            foreach (IUser u in AllUsers)
+            foreach (Patient u in AllPatients)
+            {
+                if (u.Login == login)
+                    foundUsers.Add(u);
+            }
+            foreach (Doctor u in allDoctors)
             {
                 if (u.Login == login)
                     foundUsers.Add(u);
             }
         }
 
-        private static void SearchByNameSurnnameAndLogin(string name, string surname, string login, List<IUser> foundUsers)
+        private static void SearchByNameSurnnameAndLogin(string name, string surname, string login, List<User> foundUsers)
         {
-            foreach (IUser u in AllUsers)
+            foreach (Patient u in AllPatients)
+            {
+                if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower() && u.Login == login)
+                    foundUsers.Add(u);
+            }
+            foreach (Doctor u in allDoctors)
             {
                 if (u.Name.ToLower() == name.ToLower() && u.Surname.ToLower() == surname.ToLower() && u.Login == login)
                     foundUsers.Add(u);
@@ -177,7 +251,7 @@ namespace Hospital
         }
 
 
-        public static IUser Select(List<IUser> list)
+        public static User Select(List<User> list)
         {
             try
             {
@@ -223,50 +297,75 @@ namespace Hospital
 
         public static void SignIn()
         {
-            if (myDoctor == null && myPatient == null /*&& myAdmin == null*/)
+            if (myUser == null)
             {
                 Console.Write("Login: ");
-                string login = Console.ReadLine().Replace("Login:", "").Trim();
+                string login = Console.ReadLine();
                 Console.Write("Password: ");
-                string password = GetPasswordFromUser();
+                string password = HashSha256(GetPasswordFromUser());
                 Console.WriteLine();
-                foreach (IUser u in AllUsers)
+                foreach (Patient p in AllPatients)
                 {
-                    if (login == u.Login && password == u.Password)
+                    if (login == p.Login && password == p.Password)
                     {
-                        try
-                        {
-                            myPatient = (IPatient)u;
-                            Console.WriteLine();
-                            PrintUser(myPatient);
-                            Console.Write("\n         Messeges ");
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(myPatient.CountOfUnreadMessages);
-                            Console.ForegroundColor = ConsoleColor.White;
-                            return;
-                        }
-                        catch (InvalidCastException)
-                        {
-                            try
-                            {
-                                myDoctor = (IDoctor)u;
-                                Console.WriteLine();
-                                PrintUser(myDoctor);
-                                Console.Write("\nRequests ");
+                        myUser = p;
+                        Console.WriteLine();
+                        PrintUser(myUser);
+                        //if(u.Possition == "Patient")
+                        //{
+                            //try
+                            //{
+                                //myPatient = (Patient)myUser;
+                                Console.Write("\nMesseges ");
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine(myDoctor.ListOfRequests.Count);
+                                Console.WriteLine(p.Messages.Count);
                                 Console.ForegroundColor = ConsoleColor.White;
                                 return;
-                            }
-                            catch (InvalidCastException)
-                            {
-                                //myAdmin = (Admin)u;
-                                //Console.WriteLine();
-                                //PrintUser(myAdmin);
-                                //return;
-                            }
-                        }
+                            //}
+                            //catch (Exception) { }
+                            //return;
+                        //}
+                        //else if(u.Possition == "Doctor")
+                        //{
+                        //    try
+                        //    {
+                        //        Console.Write("\nRequests ");
+                        //        Console.ForegroundColor = ConsoleColor.Red;
+                        //        myDoctor = (Doctor)myUser;
+                        //        Console.WriteLine(myDoctor.ListOfRequests.Count);
+                        //        Console.ForegroundColor = ConsoleColor.White;
+                        //        return;
+                        //    }
+                        //    catch (Exception) { }
+                        //}
+                        //else 
+                        //{
+                        //    return;
+                        //}
                     }
+                }
+                foreach (Doctor d in allDoctors)
+                {
+                    if (login == d.Login && password == d.Password)
+                    {
+                        myUser = d;
+                        Console.WriteLine();
+                        PrintUser(myUser);
+                        Console.Write("\nRequests ");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        myDoctor = (Doctor)myUser;
+                        Console.WriteLine(myDoctor.ListOfRequests.Count);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        return;
+                    }
+                }
+
+                if (login == admin.Login && password == admin.Password)
+                {
+                    myUser = admin;
+                    Console.WriteLine();
+                    PrintUser(myUser);
+                    return;
                 }
                 MessageBox.Show("Incorrect login or password.");
             }
@@ -276,49 +375,131 @@ namespace Hospital
             }
         }
 
-        public static void SignUp()
+        public static string[] SignUp()
         {
             Console.Write("Name: ");
-            string name = Console.ReadLine().Replace("Name:", "").Trim();
+            string name = Console.ReadLine();
             Console.Write("Surame: ");
-            string surname = Console.ReadLine().Replace("Surname:", "").Trim();
+            string surname = Console.ReadLine();
             bool t = true;
             string login = "";
             do
             {
                 Console.Write("Login: ");
-                login = Console.ReadLine().Replace("Login:", "").Trim();
-                foreach (IUser u in AllUsers)
+                login = Console.ReadLine();
+                foreach (Patient p in AllPatients)
                 {
-                    if (login == u.Login)
+                    if (login == p.Login)
                     {
                         MessageBox.Show("This login already exists.");
                         t = false;
                     }
                 }
+                if (!t)
+                {
+                    foreach (Doctor d in allDoctors)
+                    {
+                        if (login == d.Login)
+                        {
+                            MessageBox.Show("This login already exists.");
+                            t = false;
+                        }
+                    }
+                }
             }
             while (!t);
             Console.Write("Password: ");
-            string password = GetPasswordFromUser();
+            string password = HashSha256(GetPasswordFromUser());
             Console.WriteLine();
-            myPatient = new Patient(name, surname, login, password);
-            AllUsers.Add(myPatient);
+            string[] res = { name, surname, login, password};
+            return res;
+        }
+
+        public static void ChangePassword(User user)
+        {
+            Console.Write("Current password: ");
+            string currentPassword = HashSha256(GetPasswordFromUser());
+                if (user.Password != currentPassword)
+                {
+                    MessageBox.Show("Wrong password.");
+                }
+                else
+                {
+                    Console.Write("\nNew password: ");
+                    string newPassword = GetPasswordFromUser();
+                    Console.Write("\nRe-type new password: ");
+                    string retypedpassword = GetPasswordFromUser();
+                    if (newPassword != retypedpassword)
+                    {
+                        MessageBox.Show("You must enter the same password twice in order to confirm it.");
+                    }
+                    else
+                    {
+                        user.Password = HashSha256(newPassword);
+                    }
+                }
+            }
+
+        public static void AddDoctor()
+        {
+            string[] userData = SignUp();
+            Console.Write("Speciality: ");
+            string speciality = Console.ReadLine();
+            Console.Write("Working times: (hh:mm - hh:mm / doesn't work)\n");
+            List<WorkingTimes> workingTimes = new List<WorkingTimes>();
+            foreach (string d in Enum.GetNames(typeof(DayOfWeek)))
+            {
+                bool t = false;
+                while (!t)
+                {
+                    Console.Write(d + " ");
+                    string s = Console.ReadLine();
+                    string[] times = s.Split('-');
+                    try
+                    {
+                        workingTimes.Add(new WorkingTimes((DayOfWeek)Enum.Parse(typeof(DayOfWeek), d), times[0].Trim(), times[1].Trim()));
+                        t = true;
+                    }
+                    catch
+                    {
+                        if (s != "doesn't work")
+                            t = true;
+                        else
+                            MessageBox.Show("Write on format  hh:mm - hh:mm / doesn't work");
+
+                    }
+                }
+            }
+            
+            Console.Write("Telephone: ");
+            string tel = Console.ReadLine();
+            bool f = false;
+            int costOfConsultation = 0;
+            do
+            {
+                Console.Write("Cost of consultation: ");
+                try
+                {
+                    costOfConsultation = int.Parse(Console.ReadLine());
+                    f = true;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Write cost of consultation (by numbers).");
+                }
+            }
+            while (!f);
+
+            Admin myAdmin = (Admin)myUser;
+            myAdmin.AddDoctor(userData[0], userData[1], userData[2], userData[3], speciality, workingTimes, tel, costOfConsultation);
         }
 
         public static void SignOut()
         {
-            if (myPatient != null)
+            if (myUser != null)
             {
-                myPatient = null;
+                myUser = null;
             }
-            else if (myDoctor != null)
-            {
-                myDoctor = null;
-            }
-            //else if (myAdmin != null)
-            //{
-            //    myAdmin = null;
-            //}
             else
             {
                 MessageBox.Show("You are not signed in.");
@@ -335,7 +516,7 @@ namespace Hospital
                 if (key.Key != ConsoleKey.Backspace && key.Key != ConsoleKey.Enter)
                 {
                     password += key.KeyChar;
-                    Console.Write("");
+                    Console.Write("*");
                 }
                 else
                 {
@@ -358,28 +539,33 @@ namespace Hospital
             }
             else
             {
-
-                Doctor doctor = (Doctor)selected;
-                doctor.Calendar.Sort();
-                foreach (Consultation c in doctor.Calendar)
-                {
-                    if (c.StartOfConsultation > DateTime.Now)
-                    {
-                        Console.WriteLine(c);
-                    }
-                }
-                Console.WriteLine("Write date and time for consultation.");
-                date = Console.ReadLine();
                 try
                 {
-                    string[] dateAndTime = date.Split('/', '.', ' ', ':');
-                    DateTime startOfConsultation = new DateTime(int.Parse(dateAndTime[2]), int.Parse(dateAndTime[1]), int.Parse(dateAndTime[0]), int.Parse(dateAndTime[3]), int.Parse(dateAndTime[4]), 0);
-                    myPatient.RequestForConsultation(doctor, startOfConsultation);
+                    Doctor doctor = (Doctor)selected;
+                    doctor.Calendar.Sort();
+                    foreach (Consultation c in doctor.Calendar)
+                    {
+                        if (c.StartOfConsultation > DateTime.Now)
+                        {
+                            Console.WriteLine(c);
+                        }
+                    }
+                    Console.WriteLine("Write date and time for consultation.");
+                    date = Console.ReadLine();
+                    try
+                    {
+                        string[] dateAndTime = date.Split('/', '.', ' ', ':');
+                        Console.WriteLine("{0}, {1}, {2}, {3}, {4}", dateAndTime[0], dateAndTime[1], dateAndTime[2], dateAndTime[3], dateAndTime[4]);
+                        DateTime startOfConsultation = new DateTime(int.Parse(dateAndTime[2]), int.Parse(dateAndTime[1]), int.Parse(dateAndTime[0]), int.Parse(dateAndTime[3]), int.Parse(dateAndTime[4]), 0);
+                        Patient myPatient = (Patient)myUser;
+                        myPatient.RequestForConsultation(doctor, startOfConsultation);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Please enter date in DD/MM/YYYY HH:MM or DD.MM.YYYY HH:MM format.");
+                    }
                 }
-                catch (Exception)
-                {
-                    MessageBox.Show("Please enter date in DD/MM/YY HH:MM or DD.MM.YY HH:MM format.");
-                }
+                catch { }
             }
         }
 
@@ -403,54 +589,117 @@ namespace Hospital
                     }
                 }
                 Consultation newConsultation = new Consultation(request.StartOfConsultation, request.StartOfConsultation.AddMinutes(duration), request.Patient);
+                Doctor myDoctor = (Doctor)myUser;
                 myDoctor.ServeAPatient(newConsultation);
             }
         }
 
-        private static void PrintUser(IUser user)
+        private static void PrintUser(User user)
         {
             Console.WriteLine("{0}: {1} {2} ({3})",user.Possition , user.Name , user.Surname , user.Login);
+        }
+
+        public static string HashSha256(string text)
+        {
+            byte[] bytes = Encoding.UTF8.GetBytes(text);
+            SHA256Managed hashstring = new SHA256Managed();
+            byte[] hash = hashstring.ComputeHash(bytes);
+            string hashString = string.Empty;
+            foreach (byte x in hash)
+            {
+                hashString += String.Format("{0:x2}", x);
+            }
+            return hashString;
         }
 
 
 
 
 
+        private static Patient myPatient = null;
+        private static Doctor myDoctor = null;
+        private static Admin myAdmin = null;
+        private static User myUser = null;
+        private static User selected = null;
 
-        private static IPatient myPatient = null;
-        private static IDoctor myDoctor = null;
-        //private static IAdmin myAdmin = null;
-        private static IUser selected = null;
+
+        
 
         public static void MyConsole()
         {
+            //allUsers = JsonConvert.DeserializeObject<List<User>>(File.ReadAllText(allUsersPath));
+            AllPatients = JsonConvert.DeserializeObject<List<Patient>>(File.ReadAllText(allPatientsPath));
+            allDoctors = JsonConvert.DeserializeObject<List<Doctor>>(File.ReadAllText(allDoctorsPath));
+            admin = JsonConvert.DeserializeObject<Admin>(File.ReadAllText(adminPath));
+
+            //AllUsers.Add(admin);
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("WELCOME TO OUR HOSPITAL :)\n");
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.WriteLine("Active commands: " + (Command)0);
-            for (int i = 1; i < 5; i++)
+            for (int i = 1; i <= (int)Command.exit; i++)
             {
                 Console.WriteLine("                 " + (Command)i);
             }
 
-
             Command command = Command.nothing;
             while (command != Command.exit)
             {
-                if (myPatient != null)
+                if (myUser != null)
                 {
-                    Console.WriteLine();
-                    PrintUser(myPatient);
+                    if (myUser.Possition == "Patient")
+                    {
+                        Console.WriteLine();
+                        PrintUser(myUser);
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine("Active commands: " + (Command)2);
+                        for (int i = 3; i <= (int)Command.myMesseges; i++)
+                        {
+                            if ((selected == null || selected.Possition != "Doctor") && (Command)i == Command.requestForConsultation)
+                                continue;
+                            Console.WriteLine("                 " + (Command)i);
+                        }
+                    }
+                    else if (myUser.Possition == "Doctor")
+                    {
+                        Console.WriteLine();
+                        PrintUser(myUser);
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine("Active commands: " + (Command)2);
+                        for (int i = 3; i <= (int)Command.changePassword; i++)
+                        {
+                            Console.WriteLine("                 " + (Command)i);
+                        }
+                        for (int i = (int)Command.addPatientHistory; i <= (int)Command.myCalendar; i++)
+                        {
+                            if ((selected == null || selected.Possition != "Patient") && (Command)i == Command.addPatientHistory)
+                                continue;
+                            Console.WriteLine("                 " + (Command)i);
+                        }
+                    }
+                    else if (myUser.Possition == "Admin")
+                    {
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.WriteLine("Active commands: " + (Command)2);
+                        for (int i = 3; i <= (int)Command.changePassword; i++)
+                        {
+                            Console.WriteLine("                 " + (Command)i);
+                        }
+                        for (int i = (int)Command.addDoctor; i <= (int)Command.reports; i++)
+                        {
+                            if ((selected == null || selected.Possition != "Doctor") && (Command)i == Command.deleteDoctor)
+                                continue;
+                                Console.WriteLine("                 " + (Command)i);
+                        }
+                        Console.ForegroundColor = ConsoleColor.White;
+                        PrintUser(myUser);
+                    }
+                    if(selected != null)
+                        Console.Write("Opened Page: ");
+                    PrintUser(selected);
                 }
-                else if (myDoctor != null)
-                {
-                    Console.WriteLine();
-                    PrintUser(myDoctor);
-                }
-                //else if (myAdmin != null)
-                //{
-                //    Console.WriteLine();
-                //    PrintUser(myAdmin);
-                //}
+                Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("$ ");
                 String line = Console.ReadLine();
                 command = DetectCommand(line.Split()[0]);
@@ -465,30 +714,48 @@ namespace Hospital
                         Console.WriteLine(selected);
                         break;
                     case Command.signIn:
-                        SignIn();
+                        if (myUser == null)
+                            SignIn();
+                        else
+                            MessageBox.Show("You are already loged in.");
                         break;
                     case Command.signUp:
-                        SignUp();
+                        string[] userData = SignUp();
+                        myUser = new Patient(userData[0], userData[1],userData[2],userData[3]);
+                        //AllUsers.Add(myUser);
+                        try
+                        {
+                            allPatients.Add((Patient)myUser);
+                        }
+                        catch { }
                         break;
                     case Command.signOut:
                         SignOut();
+                        break;
+                    case Command.changePassword:
+                        if (myUser != null)
+                        {
+                            ChangePassword(myUser);
+                        }
                         break;
                     case Command.requestForConsultation:
                         RequestForConsultation(line.Replace(command.ToString(), "").Trim());
                         break;
                     case Command.myHistory:
+                        myPatient = (Patient)myUser;
                         myPatient.SeeMyHistory();
                         break;
                     case Command.myMesseges:
+                        myPatient = (Patient)myUser;
                         myPatient.SeeMyMessages();
                         break;
                     case Command.addPatientHistory:
-                        try
+                        myDoctor = (Doctor)myUser;
+                        if(selected.Possition == "Patient")
                         {
-                            Patient selectedPatient = (Patient)selected;
-                            myDoctor.AddNoteToPatientHistory(selectedPatient, line.Replace(command.ToString(), "").Trim());
+                            myDoctor.AddNoteToPatientHistory((Patient)selected, line.Replace(command.ToString(), "").Trim());
                         }
-                        catch (System.InvalidCastException)
+                        else
                         {
                             MessageBox.Show("There is no patient selected.");
                         }
@@ -509,7 +776,25 @@ namespace Hospital
                     case Command.myCalendar:
                         myDoctor.SeeMyCalendar();
                         break;
+                    case Command.addDoctor:
+                        AddDoctor();
+                        break;
+                    case Command.deleteDoctor:
+                        if (selected != null && selected.Possition == "Doctor")
+                        {
+                            myAdmin = (Admin)myUser;
+                            myAdmin.DeleteDoctor((Doctor)selected);
+                        }
+                        else
+                        {
+                            MessageBox.Show("There is no doctor selected.");
+                        }
+                        break;
                 }
+                //File.WriteAllText(allUsersPath, JsonConvert.SerializeObject(allUsers));
+                File.WriteAllText(allPatientsPath, JsonConvert.SerializeObject(AllPatients));
+                File.WriteAllText(allDoctorsPath, JsonConvert.SerializeObject(AllDoctors));
+                File.WriteAllText(adminPath, JsonConvert.SerializeObject(admin));
             }
         }
     }

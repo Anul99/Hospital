@@ -3,36 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms; 
+using System.Windows.Forms;
+using System.Configuration;
+using System.Security.Cryptography;
 
 namespace Hospital
 { 
-    public interface IDoctor : IUser
-    {
-        string Speciality { get; set; }
-        List<WorkingTimes> WorkingTimes { get; set; }
-        List<Consultation> Calendar { get; set; }
-        string Telephone { get; set; }
-        int CostOfConsultation { get; set; }
-        List<Consultation> ListOfRequests { get; set; }
+    //public interface IDoctor : IUser
+    //{
+    //    string Speciality { get; set; }
+    //    List<WorkingTimes> WorkingTimes { get; set; }
+    //    List<Consultation> Calendar { get; set; }
+    //    string Telephone { get; set; }
+    //    int CostOfConsultation { get; set; }
+    //    List<Consultation> ListOfRequests { get; set; }
 
 
-        void AddNoteToPatientHistory(Patient patient, string note);
-        void ServeAPatient(Consultation request);
-        void RefuseARequest(Consultation request);
-        void OpenListOfRequests();
-        void SeeMyCalendar();
-    }
+    //    void AddNoteToPatientHistory(Patient patient, string note);
+    //    void ServeAPatient(Consultation request);
+    //    void RefuseARequest(Consultation request);
+    //    void OpenListOfRequests();
+    //    void SeeMyCalendar();
+    //    void ChangePassword(string newPassword);
+    //}
 
 
-    public class Doctor : IDoctor
+    public class Doctor : User/*, IDoctor*/
     {
         
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Possition { get; set; }
+        //public string Name { get; set; }
+        //public string Surname { get; set; }
+        //public string Login { get; set; }
+        //public string Password { get; set; }
+        //public string Possition { get; set; }
         public string Speciality { get; set; }
         public List<WorkingTimes> WorkingTimes { get; set; }
         public List<Consultation> Calendar { get; set; }
@@ -60,7 +63,7 @@ namespace Hospital
             {
                 if (patient == c.Patient && c.StartOfConsultation < DateTime.Now)
                 {
-                    patient.History.Add(note + "\n\nDoctor: " + this.Name + " " + this.Surname + " (" + this.Login + ")\n\n");
+                    patient.History += note + "\n\nDoctor: " + this.Name + " " + this.Surname + " (" + this.Login + ")\n\n";
                     return;
                 }
             }
@@ -98,7 +101,8 @@ namespace Hospital
                     Console.ForegroundColor = ConsoleColor.Gray;
                     ListOfRequests.RemoveAt(i);
                 }
-                Console.WriteLine(ListOfRequests.Count - i + " " + ListOfRequests[i]);
+                Console.Write(ListOfRequests.Count - i + " ");
+                PrintRequest(ListOfRequests[i]);
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
@@ -123,7 +127,7 @@ namespace Hospital
         public override string ToString()
         {
             string res = this.Possition + "/ " + this.Speciality + "\n" ;
-            res += this.Name + " " + this.Surname + "\n" + "Login: " + this.Login + "\n" + "Tel:" + this.Telephone;
+            res += this.Name + " " + this.Surname + "\n" + "Login: " + this.Login + "\n" + "Tel:" + this.Telephone + "\n";
             foreach (WorkingTimes t in this.WorkingTimes)
             {
                 res += t + "\n";
@@ -131,10 +135,21 @@ namespace Hospital
             return res;
         }
 
-        public int CompareTo(IUser other)
+        //public int CompareTo(IUser other)
+        //{
+        //    return this.Name.CompareTo(other.Name);
+        //}
+
+        public void ChangePassword(string newPassword)
         {
-            return this.Name.CompareTo(other.Name);
+            this.Password = newPassword;
         }
+
+        public void PrintRequest(Consultation request)
+        {
+            Console.WriteLine(request.Patient.Name + " " + request.Patient.Surname + " " + request.StartOfConsultation.ToString().Substring(0, 16));
+        }
+
     }
 
     public struct WorkingTimes
@@ -148,13 +163,14 @@ namespace Hospital
             this.DayOfWeek = dayOfWeek;
             string[] startingT = startingTime.Split(':');
             string[] endingT = endingTime.Split(':');
-            this.StartingTime = new TimeSpan(int.Parse(startingT[0]), int.Parse(startingT[1]), 0);
-            this.EndingTime = new TimeSpan(int.Parse(endingT[0]), int.Parse(endingT[1]), 0);
+            this.StartingTime = new TimeSpan(int.Parse(startingT[0].Trim()), int.Parse(startingT[1].Trim()), 0);
+            this.EndingTime = new TimeSpan(int.Parse(endingT[0].Trim()), int.Parse(endingT[1].Trim()), 0);
         }
 
         public override string ToString()
         {
             return (this.DayOfWeek + " " +  this.StartingTime + "-" + this.EndingTime);
         }
+
     }
 }

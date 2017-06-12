@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.SqlClient;
 
 namespace Hospital
 {
     class Program
     {
+        public SqlConnection connection = new SqlConnection(".NETFramework,Version=v4.5.2");
         static void Main(string[] args)
         {
             Hospital.MyConsole();
@@ -57,6 +59,16 @@ namespace Hospital
             //Consultation c = new Consultation(DateTime.Now, p);
             //Console.WriteLine(c);
 
+            //string startingTime = "12:00";
+            //string endingTime = "9:00";
+            //string[] startingT = startingTime.Split(':');
+            //string[] endingT = endingTime.Split(':');
+
+            //Console.WriteLine("{0}, {1}, {2}, {3}", startingT[0], startingT[1], endingT[0], endingT[1]);
+            //TimeSpan StartingTime = new TimeSpan(int.Parse(startingT[0].Trim()), int.Parse(startingT[1].Trim()), 0);
+            //TimeSpan EndingTime = new TimeSpan(int.Parse(endingT[0].Trim()), int.Parse(endingT[1].Trim()), 0);
+            //Console.WriteLine(startingTime);
+            //Console.WriteLine(EndingTime);
         }
     }
 }

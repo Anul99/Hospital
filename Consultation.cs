@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Sql;
 
 namespace Hospital
 {
@@ -11,6 +12,8 @@ namespace Hospital
         public DateTime StartOfConsultation { get; set; }
         public DateTime EndOfConsultation { get; set; }
         public Patient Patient { get; set; }
+
+        public Consultation() { }
 
         public Consultation(DateTime startOfConsultation, DateTime endOfConsultation, Patient patient)
         {
