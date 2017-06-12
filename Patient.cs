@@ -28,24 +28,9 @@ namespace Hospital
         }
     }
 
-    //public interface IPatient : IUser
-    //{
-    //    string History { get; set; }
-    //    List<Message> Messages { get; set; }
-    //    int CountOfUnreadMessages { get; }
 
-    //    void RequestForConsultation(Doctor doctor, DateTime startOfConsultation);
-    //    void SeeMyHistory();
-    //    void SeeMyMessages();
-    //}
-
-    public class Patient : User/*, IPatient */
-    {
-        //public string Name { get; set; }
-        //public string Surname { get; set; }
-        //public string Login { get; set; }
-        //public string Password { get; set; }
-        //public string Possition { get; set; }
+    public class Patient : User
+    { 
         public string History { get ; set; }
         public List<Message> Messages { get; set; }
         public int CountOfUnreadMessages
@@ -95,12 +80,6 @@ namespace Hospital
         public void SeeMyMessages()
         {
             int i = this.Messages.Count - 1;
-            //int countOfUnreadMessages = 0;
-            //while (!Messages[i].Read && i >= 0)
-            //{
-            //    countOfUnreadMessages++;
-            //    i--;
-            //}
             Console.Write("Messeges ");
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(this.CountOfUnreadMessages);
@@ -108,6 +87,7 @@ namespace Hospital
             for (i = this.Messages.Count - 1; i > this.Messages.Count - this.CountOfUnreadMessages - 1; i--)
             { 
                 Console.WriteLine(this.Messages[i]);
+                //this.Messages[i].Read = true;
             }
             Console.ForegroundColor = ConsoleColor.White;
             for ( ; i >= 0; i--)
@@ -121,11 +101,6 @@ namespace Hospital
         {
             return this.Name + " " + this.Surname + "\nLogin: " + this.Login + "\nHistory: " + this.History;
         }
-
-        //public int CompareTo(IUser other)
-        //{
-        //    return this.Name.CompareTo(other.Name);
-        //}
 
         public void ChangePassword(string newPassword)
         {

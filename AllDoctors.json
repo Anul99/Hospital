@@ -1,1 +1,296 @@
-[{"Speciality":"Dantist","WorkingTimes":[{"DayOfWeek":0,"StartingTime":"09:00:00","EndingTime":"12:00:00"},{"DayOfWeek":1,"StartingTime":"09:00:00","EndingTime":"12:00:00"},{"DayOfWeek":2,"StartingTime":"12:00:00","EndingTime":"15:00:00"},{"DayOfWeek":3,"StartingTime":"12:00:00","EndingTime":"15:00:00"},{"DayOfWeek":4,"StartingTime":"09:00:00","EndingTime":"15:00:00"},{"DayOfWeek":5,"StartingTime":"09:00:00","EndingTime":"15:00:00"},{"DayOfWeek":6,"StartingTime":"10:00:00","EndingTime":"13:00:00"}],"Calendar":[],"Telephone":"","CostOfConsultation":5000,"ListOfRequests":[{"StartOfConsultation":"2017-06-12T11:00:00","EndOfConsultation":"0001-01-01T00:00:00","Patient":{"History":null,"Messages":[],"CountOfUnreadMessages":0,"Name":"Anahit","Surname":"Martirosyan","Login":"an","Password":"61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4","Possition":"Patient"}},{"StartOfConsultation":"2017-06-12T15:00:00","EndOfConsultation":"0001-01-01T00:00:00","Patient":{"History":null,"Messages":[],"CountOfUnreadMessages":0,"Name":"Anahit","Surname":"Martirosyan","Login":"an","Password":"61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4","Possition":"Patient"}},{"StartOfConsultation":"2017-06-13T12:00:00","EndOfConsultation":"0001-01-01T00:00:00","Patient":{"History":null,"Messages":[],"CountOfUnreadMessages":0,"Name":"Anahit","Surname":"Martirosyan","Login":"an","Password":"61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4","Possition":"Patient"}}],"Name":"Pavel","Surname":"Mailyan","Login":"Pavlik","Password":"bcbefaa0c4dfc065803c62d099e0cef5c756a1801b6a9cb5c19e692fc3b69715","Possition":"Doctor"},{"Speciality":"gynecologist","WorkingTimes":[{"DayOfWeek":0,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":1,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":2,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":3,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":4,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":5,"StartingTime":"09:00:00","EndingTime":"23:00:00"},{"DayOfWeek":6,"StartingTime":"09:00:00","EndingTime":"23:00:00"}],"Calendar":[],"Telephone":"+37477749349","CostOfConsultation":200,"ListOfRequests":[],"Name":"Vahe","Surname":"Hayrapetyan","Login":"vahe","Password":"e1660bdca466582dc552d56a9dea747663e4e107870c80ea7bb55284f2168fb3","Possition":"Doctor"}]
+[
+  {
+    "Calendar": [
+      {
+        "StartOfConsultation": "2017-06-12T11:00:00",
+        "EndOfConsultation": "2017-06-12T12:00:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 12/06/2017 11:00 - 12:00\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T05:42:51.6321167+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-12T12:15:00",
+        "EndOfConsultation": "2017-06-12T12:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 12/06/2017 12:15 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T06:44:58.9916678+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-12T12:15:00",
+        "EndOfConsultation": "2017-06-12T13:15:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 12/06/2017 12:15 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T06:44:58.9916678+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-12T15:00:00",
+        "EndOfConsultation": "2017-06-12T15:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [ ],
+          "CountOfUnreadMessages": 0,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-13T12:00:00",
+        "EndOfConsultation": "2017-06-13T12:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T05:55:24.3878039+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-13T12:00:00",
+        "EndOfConsultation": "2017-06-13T12:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T05:55:24.3878039+04:00",
+              "Read": false
+            },
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T06:07:10.5472891+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 2,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-12T15:00:00",
+        "EndOfConsultation": "2017-06-12T15:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 12/06/2017 15:00 - 00:00\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T06:59:13.1345866+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      },
+      {
+        "StartOfConsultation": "2017-06-13T12:00:00",
+        "EndOfConsultation": "2017-06-13T12:30:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T05:55:24.3878039+04:00",
+              "Read": false
+            },
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T06:07:10.5472891+04:00",
+              "Read": false
+            },
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 12:30\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T07:41:03.8323756+04:00",
+              "Read": false
+            },
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 13/06/2017 12:00 - 00:00\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T07:41:03.8323756+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 4,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      }
+    ],
+    "CostOfConsultation": 5000,
+    "ListOfRequests": [
+      {
+        "StartOfConsultation": "2017-06-12T11:00:00",
+        "EndOfConsultation": "0001-01-01T00:00:00",
+        "Patient": {
+          "History": null,
+          "Messages": [
+            {
+              "Text": "Your request for consultation was confirmed. \nYour consultation: 12/06/2017 11:00 - 12:00\n                   Doctor:Pavel Mailyan (Pavlik)",
+              "Time": "2017-06-12T05:42:51.6321167+04:00",
+              "Read": false
+            }
+          ],
+          "CountOfUnreadMessages": 1,
+          "Name": "Anahit",
+          "Surname": "Martirosyan",
+          "Login": "an",
+          "Password": "61be55a8e2f6b4e172338bddf184d6dbee29c98853e0a0485ecee7f27b9af0b4",
+          "Possition": "Patient"
+        }
+      }
+    ],
+    "Login": "Pavlik",
+    "Name": "Pavel",
+    "Password": "bcbefaa0c4dfc065803c62d099e0cef5c756a1801b6a9cb5c19e692fc3b69715",
+    "Possition": "Doctor",
+    "Speciality": "Dantist",
+    "Surname": "Mailyan",
+    "Telephone": "",
+    "WorkingTimes": [
+      {
+        "DayOfWeek": 0,
+        "StartingTime": "09:00:00",
+        "EndingTime": "12:00:00"
+      },
+      {
+        "DayOfWeek": 1,
+        "StartingTime": "09:00:00",
+        "EndingTime": "12:00:00"
+      },
+      {
+        "DayOfWeek": 2,
+        "StartingTime": "12:00:00",
+        "EndingTime": "15:00:00"
+      },
+      {
+        "DayOfWeek": 3,
+        "StartingTime": "12:00:00",
+        "EndingTime": "15:00:00"
+      },
+      {
+        "DayOfWeek": 4,
+        "StartingTime": "09:00:00",
+        "EndingTime": "15:00:00"
+      },
+      {
+        "DayOfWeek": 5,
+        "StartingTime": "09:00:00",
+        "EndingTime": "15:00:00"
+      },
+      {
+        "DayOfWeek": 6,
+        "StartingTime": "10:00:00",
+        "EndingTime": "13:00:00"
+      }
+    ]
+  },
+  {
+    "Speciality": "gynecologist",
+    "WorkingTimes": [
+      {
+        "DayOfWeek": 0,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 1,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 2,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 3,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 4,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 5,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      },
+      {
+        "DayOfWeek": 6,
+        "StartingTime": "09:00:00",
+        "EndingTime": "23:00:00"
+      }
+    ],
+    "Calendar": [ ],
+    "Telephone": "+37477749349",
+    "CostOfConsultation": 200,
+    "ListOfRequests": [ ],
+    "Name": "Vahe",
+    "Surname": "Hayrapetyan",
+    "Login": "vahe",
+    "Password": "e1660bdca466582dc552d56a9dea747663e4e107870c80ea7bb55284f2168fb3",
+    "Possition": "Doctor"
+  }
+]

@@ -90,7 +90,6 @@
     <None Include="Admin.json" />
     <None Include="AllDoctors.json" />
     <None Include="AllPatients.json" />
-    <None Include="allUsers.json" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>

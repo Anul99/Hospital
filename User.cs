@@ -14,7 +14,7 @@ namespace Hospital
         string Password { get; set; }
         string Possition { get; set; }
     }
-    public class User /*: IUser*/: IComparable<User>
+    public class User :IComparable<User>
     {
         public string Name { get; set; }
         public string Surname { get; set; }

@@ -9,33 +9,8 @@ using System.Security.Cryptography;
 
 namespace Hospital
 { 
-    //public interface IDoctor : IUser
-    //{
-    //    string Speciality { get; set; }
-    //    List<WorkingTimes> WorkingTimes { get; set; }
-    //    List<Consultation> Calendar { get; set; }
-    //    string Telephone { get; set; }
-    //    int CostOfConsultation { get; set; }
-    //    List<Consultation> ListOfRequests { get; set; }
-
-
-    //    void AddNoteToPatientHistory(Patient patient, string note);
-    //    void ServeAPatient(Consultation request);
-    //    void RefuseARequest(Consultation request);
-    //    void OpenListOfRequests();
-    //    void SeeMyCalendar();
-    //    void ChangePassword(string newPassword);
-    //}
-
-
-    public class Doctor : User/*, IDoctor*/
+    public class Doctor : User
     {
-        
-        //public string Name { get; set; }
-        //public string Surname { get; set; }
-        //public string Login { get; set; }
-        //public string Password { get; set; }
-        //public string Possition { get; set; }
         public string Speciality { get; set; }
         public List<WorkingTimes> WorkingTimes { get; set; }
         public List<Consultation> Calendar { get; set; }
@@ -76,7 +51,14 @@ namespace Hospital
             {
                 this.Calendar.Add(request);
                 request.Patient.Messages.Add(new Message("Your request for consultation was confirmed. \nYour consultation: " + request.StartOfConsultation.ToString().Substring(0, 16) + " - " + request.EndOfConsultation.TimeOfDay.ToString().Substring(0, 5) + "\n                   Doctor:" + this.Name + " " + this.Surname + " (" + this.Login + ")", DateTime.Now));
-                ListOfRequests.Remove(request);
+                //foreach (Patient p in Hospital.AllPatients)
+                //{
+                //    if (request.Patient == p)
+                //    {
+                //        p.Messages.Add(new Message("Your request for consultation was confirmed. \nYour consultation: " + request.StartOfConsultation.ToString().Substring(0, 16) + " - " + request.EndOfConsultation.TimeOfDay.ToString().Substring(0, 5) + "\n                   Doctor:" + this.Name + " " + this.Surname + " (" + this.Login + ")", DateTime.Now));
+                //    }
+                //}
+                this.ListOfRequests.Remove(request);
             }
             else
             {
@@ -87,7 +69,7 @@ namespace Hospital
 
         public void RefuseARequest(Consultation request)
         {
-            request.Patient.Messages.Add(new Message("Your request for consultation on" + request.StartOfConsultation.ToString().Substring(0,16) + "was refused.", DateTime.Now));
+            request.Patient.Messages.Add(new Message("Your request for consultation on " + request.StartOfConsultation.ToString().Substring(0,16) + " was refused.", DateTime.Now));
             ListOfRequests.Remove(request);
 
         }
@@ -134,11 +116,6 @@ namespace Hospital
             }
             return res;
         }
-
-        //public int CompareTo(IUser other)
-        //{
-        //    return this.Name.CompareTo(other.Name);
-        //}
 
         public void ChangePassword(string newPassword)
         {
